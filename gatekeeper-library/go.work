@@ -1,0 +1,8 @@
+go 1.20
+
+use (
+	./scripts/artifacthub
+	./scripts/require-sync
+	./scripts/validate
+	./scripts/website
+)
