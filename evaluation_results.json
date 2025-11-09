@@ -1,0 +1,519 @@
+{
+  "total_tests": 8,
+  "successful_detections": 7,
+  "detection_rate": 0.875,
+  "precision": 0.48484848484848486,
+  "recall": 1.0,
+  "f1_score": 0.653061224489796,
+  "severity_breakdown": {
+    "CRITICAL": {
+      "total": 3,
+      "detected": 3
+    },
+    "HIGH": {
+      "total": 2,
+      "detected": 2
+    },
+    "MEDIUM": {
+      "total": 2,
+      "detected": 2
+    },
+    "LOW": {
+      "total": 1,
+      "detected": 0
+    }
+  },
+  "detailed_results": [
+    {
+      "name": "Privileged Container with HostPath",
+      "severity": "CRITICAL",
+      "expected_patterns": [
+        "privilege_escalation",
+        "run_as_root",
+        "privileged_containers",
+        "hostpath_volumes"
+      ],
+      "detected_patterns": [
+        "missing_resource_limits",
+        "hostpath_volumes",
+        "privileged_containers",
+        "run_as_root",
+        "privilege_escalation",
+        "serviceaccount_automount",
+        "untrusted_registries"
+      ],
+      "patterns_detail": [
+        {
+          "pattern": "privileged_containers",
+          "severity": "HIGH",
+          "description": "Privileged containers detected: attacker",
+          "policy_template": "library/pod-security-policy/privileged-containers",
+          "containers": [
+            "attacker"
+          ]
+        },
+        {
+          "pattern": "missing_resource_limits",
+          "severity": "MEDIUM",
+          "description": "Containers without resource limits: attacker",
+          "policy_template": "library/general/containerlimits",
+          "containers": [
+            "attacker"
+          ]
+        },
+        {
+          "pattern": "untrusted_registries",
+          "severity": "MEDIUM",
+          "description": "1 container(s) with untrusted images",
+          "policy_template": "library/general/allowedrepos",
+          "containers": [
+            {
+              "name": "attacker",
+              "image": "ubuntu:24.04",
+              "reason": "untrusted registry"
+            }
+          ]
+        },
+        {
+          "pattern": "privilege_escalation",
+          "severity": "HIGH",
+          "description": "Privilege escalation explicitly allowed: attacker",
+          "policy_template": "library/pod-security-policy/allow-privilege-escalation",
+          "containers": [
+            "attacker"
+          ]
+        },
+        {
+          "pattern": "run_as_root",
+          "severity": "HIGH",
+          "description": "Containers may run as root (no runAsNonRoot set): attacker",
+          "policy_template": "library/pod-security-policy/users",
+          "containers": [
+            "attacker"
+          ]
+        },
+        {
+          "pattern": "serviceaccount_automount",
+          "severity": "MEDIUM",
+          "description": "Pod uses default ServiceAccount with token auto-mount",
+          "policy_template": "library/pod-security-policy/automount-serviceaccount-token",
+          "details": "serviceAccountName: default, automountServiceAccountToken: true"
+        },
+        {
+          "pattern": "hostpath_volumes",
+          "severity": "CRITICAL",
+          "description": "1 hostPath volumes mounted",
+          "policy_template": "library/pod-security-policy/host-filesystem",
+          "volumes": [
+            {
+              "name": "host-root",
+              "path": "/"
+            }
+          ]
+        }
+      ],
+      "true_positives": 4,
+      "false_negatives": 0,
+      "false_positives": 3,
+      "detection_success": true,
+      "cve_reference": "CVE-2019-5736 (runc escape)"
+    },
+    {
+      "name": "Host Network + PID Namespace Escape",
+      "severity": "HIGH",
+      "expected_patterns": [
+        "host_namespaces",
+        "missing_resource_limits"
+      ],
+      "detected_patterns": [
+        "host_namespaces",
+        "missing_resource_limits",
+        "run_as_root",
+        "serviceaccount_automount",
+        "untrusted_registries"
+      ],
+      "patterns_detail": [
+        {
+          "pattern": "missing_resource_limits",
+          "severity": "MEDIUM",
+          "description": "Containers without resource limits: netprobe",
+          "policy_template": "library/general/containerlimits",
+          "containers": [
+            "netprobe"
+          ]
+        },
+        {
+          "pattern": "host_namespaces",
+          "severity": "HIGH",
+          "description": "Host namespace usage: hostNetwork, hostPID, hostIPC",
+          "policy_template": "library/pod-security-policy/host-namespaces",
+          "namespaces": [
+            "hostNetwork",
+            "hostPID",
+            "hostIPC"
+          ]
+        },
+        {
+          "pattern": "untrusted_registries",
+          "severity": "MEDIUM",
+          "description": "1 container(s) with untrusted images",
+          "policy_template": "library/general/allowedrepos",
+          "containers": [
+            {
+              "name": "netprobe",
+              "image": "busybox:1.36",
+              "reason": "untrusted registry"
+            }
+          ]
+        },
+        {
+          "pattern": "run_as_root",
+          "severity": "HIGH",
+          "description": "Containers may run as root (no runAsNonRoot set): netprobe",
+          "policy_template": "library/pod-security-policy/users",
+          "containers": [
+            "netprobe"
+          ]
+        },
+        {
+          "pattern": "serviceaccount_automount",
+          "severity": "MEDIUM",
+          "description": "Pod uses default ServiceAccount with token auto-mount",
+          "policy_template": "library/pod-security-policy/automount-serviceaccount-token",
+          "details": "serviceAccountName: default, automountServiceAccountToken: true"
+        }
+      ],
+      "true_positives": 2,
+      "false_negatives": 0,
+      "false_positives": 3,
+      "detection_success": true,
+      "cve_reference": "Container escape via host namespaces"
+    },
+    {
+      "name": "SYS_ADMIN Capability (Container Breakout)",
+      "severity": "CRITICAL",
+      "expected_patterns": [
+        "run_as_root",
+        "dangerous_capabilities"
+      ],
+      "detected_patterns": [
+        "missing_resource_limits",
+        "run_as_root",
+        "serviceaccount_automount",
+        "dangerous_capabilities",
+        "untrusted_registries"
+      ],
+      "patterns_detail": [
+        {
+          "pattern": "missing_resource_limits",
+          "severity": "MEDIUM",
+          "description": "Containers without resource limits: dangerous",
+          "policy_template": "library/general/containerlimits",
+          "containers": [
+            "dangerous"
+          ]
+        },
+        {
+          "pattern": "untrusted_registries",
+          "severity": "MEDIUM",
+          "description": "1 container(s) with untrusted images",
+          "policy_template": "library/general/allowedrepos",
+          "containers": [
+            {
+              "name": "dangerous",
+              "image": "alpine:3.18",
+              "reason": "untrusted registry"
+            }
+          ]
+        },
+        {
+          "pattern": "run_as_root",
+          "severity": "HIGH",
+          "description": "Containers may run as root (no runAsNonRoot set): dangerous",
+          "policy_template": "library/pod-security-policy/users",
+          "containers": [
+            "dangerous"
+          ]
+        },
+        {
+          "pattern": "dangerous_capabilities",
+          "severity": "HIGH",
+          "description": "1 container(s) with dangerous capabilities",
+          "policy_template": "library/pod-security-policy/capabilities",
+          "violations": [
+            {
+              "container": "dangerous",
+              "capabilities": [
+                "SYS_ADMIN",
+                "NET_ADMIN",
+                "SYS_PTRACE"
+              ]
+            }
+          ]
+        },
+        {
+          "pattern": "serviceaccount_automount",
+          "severity": "MEDIUM",
+          "description": "Pod uses default ServiceAccount with token auto-mount",
+          "policy_template": "library/pod-security-policy/automount-serviceaccount-token",
+          "details": "serviceAccountName: default, automountServiceAccountToken: true"
+        }
+      ],
+      "true_positives": 2,
+      "false_negatives": 0,
+      "false_positives": 3,
+      "detection_success": true,
+      "cve_reference": "CAP_SYS_ADMIN exploitation"
+    },
+    {
+      "name": "Deployment - Root User No Limits",
+      "severity": "MEDIUM",
+      "expected_patterns": [
+        "missing_resource_limits",
+        "run_as_root",
+        "untrusted_registries"
+      ],
+      "detected_patterns": [
+        "missing_resource_limits",
+        "run_as_root",
+        "serviceaccount_automount",
+        "untrusted_registries"
+      ],
+      "patterns_detail": [
+        {
+          "pattern": "missing_resource_limits",
+          "severity": "MEDIUM",
+          "description": "Containers without resource limits: app",
+          "policy_template": "library/general/containerlimits",
+          "containers": [
+            "app"
+          ]
+        },
+        {
+          "pattern": "untrusted_registries",
+          "severity": "MEDIUM",
+          "description": "1 container(s) with untrusted images",
+          "policy_template": "library/general/allowedrepos",
+          "containers": [
+            {
+              "name": "app",
+              "image": "alpine:3.18",
+              "reason": "untrusted registry"
+            }
+          ]
+        },
+        {
+          "pattern": "run_as_root",
+          "severity": "HIGH",
+          "description": "Containers may run as root (no runAsNonRoot set): app",
+          "policy_template": "library/pod-security-policy/users",
+          "containers": [
+            "app"
+          ]
+        },
+        {
+          "pattern": "serviceaccount_automount",
+          "severity": "MEDIUM",
+          "description": "Pod uses default ServiceAccount with token auto-mount",
+          "policy_template": "library/pod-security-policy/automount-serviceaccount-token",
+          "details": "serviceAccountName: default, automountServiceAccountToken: true"
+        }
+      ],
+      "true_positives": 3,
+      "false_negatives": 0,
+      "false_positives": 1,
+      "detection_success": true,
+      "cve_reference": "Resource exhaustion + privilege escalation"
+    },
+    {
+      "name": "CronJob with Host Filesystem Access",
+      "severity": "HIGH",
+      "expected_patterns": [
+        "privilege_escalation",
+        "run_as_root",
+        "hostpath_volumes"
+      ],
+      "detected_patterns": [
+        "missing_resource_limits",
+        "hostpath_volumes",
+        "privilege_escalation",
+        "serviceaccount_automount",
+        "run_as_root",
+        "untrusted_registries"
+      ],
+      "patterns_detail": [
+        {
+          "pattern": "missing_resource_limits",
+          "severity": "MEDIUM",
+          "description": "Containers without resource limits: shell",
+          "policy_template": "library/general/containerlimits",
+          "containers": [
+            "shell"
+          ]
+        },
+        {
+          "pattern": "untrusted_registries",
+          "severity": "MEDIUM",
+          "description": "1 container(s) with untrusted images",
+          "policy_template": "library/general/allowedrepos",
+          "containers": [
+            {
+              "name": "shell",
+              "image": "alpine:3.18",
+              "reason": "untrusted registry"
+            }
+          ]
+        },
+        {
+          "pattern": "privilege_escalation",
+          "severity": "HIGH",
+          "description": "Privilege escalation explicitly allowed: shell",
+          "policy_template": "library/pod-security-policy/allow-privilege-escalation",
+          "containers": [
+            "shell"
+          ]
+        },
+        {
+          "pattern": "run_as_root",
+          "severity": "HIGH",
+          "description": "Containers may run as root (no runAsNonRoot set): shell",
+          "policy_template": "library/pod-security-policy/users",
+          "containers": [
+            "shell"
+          ]
+        },
+        {
+          "pattern": "serviceaccount_automount",
+          "severity": "MEDIUM",
+          "description": "Pod uses default ServiceAccount with token auto-mount",
+          "policy_template": "library/pod-security-policy/automount-serviceaccount-token",
+          "details": "serviceAccountName: default, automountServiceAccountToken: true"
+        },
+        {
+          "pattern": "hostpath_volumes",
+          "severity": "HIGH",
+          "description": "1 hostPath volumes mounted",
+          "policy_template": "library/pod-security-policy/host-filesystem",
+          "volumes": [
+            {
+              "name": "host-fs",
+              "path": "/tmp"
+            }
+          ]
+        }
+      ],
+      "true_positives": 3,
+      "false_negatives": 0,
+      "false_positives": 3,
+      "detection_success": true,
+      "cve_reference": "Scheduled persistence mechanism"
+    },
+    {
+      "name": "Default SA with cluster-admin",
+      "severity": "CRITICAL",
+      "expected_patterns": [
+        "rbac_violations"
+      ],
+      "detected_patterns": [
+        "rbac_violations"
+      ],
+      "patterns_detail": [
+        {
+          "pattern": "rbac_violations",
+          "severity": "CRITICAL",
+          "description": "Binding default ServiceAccount to cluster-admin; ClusterRoleBinding grants cluster-wide permissions",
+          "policy_template": "library/general/block-cluster-admin-role-binding",
+          "violations": [
+            "Binding default ServiceAccount to cluster-admin",
+            "ClusterRoleBinding grants cluster-wide permissions"
+          ]
+        }
+      ],
+      "true_positives": 1,
+      "false_negatives": 0,
+      "false_positives": 0,
+      "detection_success": true,
+      "cve_reference": "RBAC privilege escalation"
+    },
+    {
+      "name": "Default ServiceAccount Token Exposure",
+      "severity": "MEDIUM",
+      "expected_patterns": [
+        "serviceaccount_automount"
+      ],
+      "detected_patterns": [
+        "missing_resource_limits",
+        "run_as_root",
+        "serviceaccount_automount",
+        "untrusted_registries"
+      ],
+      "patterns_detail": [
+        {
+          "pattern": "serviceaccount_automount",
+          "severity": "MEDIUM",
+          "description": "ServiceAccount auto-mounts tokens (should be disabled unless needed)",
+          "policy_template": "library/pod-security-policy/automount-serviceaccount-token",
+          "details": "automountServiceAccountToken: true"
+        },
+        {
+          "pattern": "missing_resource_limits",
+          "severity": "MEDIUM",
+          "description": "Containers without resource limits: app",
+          "policy_template": "library/general/containerlimits",
+          "containers": [
+            "app"
+          ]
+        },
+        {
+          "pattern": "untrusted_registries",
+          "severity": "MEDIUM",
+          "description": "1 container(s) with untrusted images",
+          "policy_template": "library/general/allowedrepos",
+          "containers": [
+            {
+              "name": "app",
+              "image": "alpine:3.18",
+              "reason": "untrusted registry"
+            }
+          ]
+        },
+        {
+          "pattern": "run_as_root",
+          "severity": "HIGH",
+          "description": "Containers may run as root (no runAsNonRoot set): app",
+          "policy_template": "library/pod-security-policy/users",
+          "containers": [
+            "app"
+          ]
+        }
+      ],
+      "true_positives": 1,
+      "false_negatives": 0,
+      "false_positives": 3,
+      "detection_success": true,
+      "cve_reference": "Token theft and lateral movement"
+    },
+    {
+      "name": "Secure Baseline Configuration",
+      "severity": "LOW",
+      "expected_patterns": [],
+      "detected_patterns": [
+        "serviceaccount_automount"
+      ],
+      "patterns_detail": [
+        {
+          "pattern": "serviceaccount_automount",
+          "severity": "MEDIUM",
+          "description": "Pod uses default ServiceAccount with token auto-mount",
+          "policy_template": "library/pod-security-policy/automount-serviceaccount-token",
+          "details": "serviceAccountName: default, automountServiceAccountToken: true"
+        }
+      ],
+      "true_positives": 0,
+      "false_negatives": 0,
+      "false_positives": 1,
+      "detection_success": false,
+      "cve_reference": "Best practices baseline"
+    }
+  ]
+}

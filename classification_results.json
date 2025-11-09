@@ -1,0 +1,107 @@
+{
+  "training_results": {
+    "train_accuracy": 0.6709401709401709,
+    "test_accuracy": 0.5897435897435898,
+    "cv_mean": 0.6110083256244219,
+    "cv_std": 0.026226981322927997
+  },
+  "evaluation_metrics": {
+    "train_accuracy": 0.6709401709401709,
+    "test_accuracy": 0.5897435897435898,
+    "cv_mean": 0.6110083256244219,
+    "cv_std": 0.026226981322927997,
+    "precision_non_compliant": 0.4444444444444444,
+    "recall_non_compliant": 0.7407407407407407,
+    "f1_non_compliant": 0.5555555555555556,
+    "precision_compliant": 0.7878787878787878,
+    "recall_compliant": 0.5098039215686274,
+    "f1_compliant": 0.6190476190476191,
+    "confusion_matrix": [
+      [
+        20,
+        7
+      ],
+      [
+        25,
+        26
+      ]
+    ]
+  },
+  "feature_importance": [
+    {
+      "rank": 1,
+      "feature": "total_patterns",
+      "importance": 0.22240382254103205
+    },
+    {
+      "rank": 2,
+      "feature": "untrusted_registries",
+      "importance": 0.1587703083993015
+    },
+    {
+      "rank": 3,
+      "feature": "medium_severity_count",
+      "importance": 0.1586079268531466
+    },
+    {
+      "rank": 4,
+      "feature": "run_as_root",
+      "importance": 0.13353142852330901
+    },
+    {
+      "rank": 5,
+      "feature": "privilege_escalation",
+      "importance": 0.12801808770192563
+    },
+    {
+      "rank": 6,
+      "feature": "high_severity_count",
+      "importance": 0.05397786182851799
+    },
+    {
+      "rank": 7,
+      "feature": "missing_resource_limits",
+      "importance": 0.05389863952816745
+    },
+    {
+      "rank": 8,
+      "feature": "pattern_diversity",
+      "importance": 0.036957113963264884
+    },
+    {
+      "rank": 9,
+      "feature": "severity_ratio",
+      "importance": 0.028106713341233547
+    },
+    {
+      "rank": 10,
+      "feature": "host_namespaces",
+      "importance": 0.01406371017511954
+    }
+  ],
+  "model_info": {
+    "algorithm": "Random Forest",
+    "n_estimators": 100,
+    "n_features": 18,
+    "feature_names": [
+      "total_patterns",
+      "high_severity_count",
+      "medium_severity_count",
+      "low_severity_count",
+      "critical_severity_count",
+      "privileged_containers",
+      "missing_resource_limits",
+      "host_namespaces",
+      "untrusted_registries",
+      "privilege_escalation",
+      "run_as_root",
+      "dangerous_capabilities",
+      "rbac_violations",
+      "serviceaccount_automount",
+      "hostpath_volumes",
+      "has_security_context",
+      "severity_ratio",
+      "pattern_diversity"
+    ]
+  }
+}

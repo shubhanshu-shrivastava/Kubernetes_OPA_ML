@@ -1,0 +1,125 @@
+{
+  "all_models_performance": {
+    "Random Forest": {
+      "best_params": {
+        "max_depth": 10,
+        "max_features": "sqrt",
+        "min_samples_leaf": 1,
+        "min_samples_split": 10,
+        "n_estimators": 100
+      },
+      "cv_score": 0.6933396129811885,
+      "test_accuracy": 0.5897435897435898,
+      "test_f1": 0.5970695970695971
+    },
+    "Gradient Boosting": {
+      "best_params": {
+        "learning_rate": 0.01,
+        "max_depth": 3,
+        "min_samples_split": 2,
+        "n_estimators": 200,
+        "subsample": 0.8
+      },
+      "cv_score": 0.6933396129811885,
+      "test_accuracy": 0.5897435897435898,
+      "test_f1": 0.5970695970695971
+    },
+    "SVM": {
+      "best_params": {
+        "C": 10,
+        "gamma": "auto",
+        "kernel": "rbf"
+      },
+      "cv_score": 0.6933396129811885,
+      "test_accuracy": 0.5897435897435898,
+      "test_f1": 0.5970695970695971
+    }
+  },
+  "best_model": {
+    "model_name": "Random Forest",
+    "best_params": {
+      "max_depth": 10,
+      "max_features": "sqrt",
+      "min_samples_leaf": 1,
+      "min_samples_split": 10,
+      "n_estimators": 100
+    },
+    "test_accuracy": 0.5897435897435898,
+    "test_f1": 0.5970695970695971,
+    "cv_score": 0.6933396129811885,
+    "precision": [
+      0.4444444444444444,
+      0.7878787878787878
+    ],
+    "recall": [
+      0.7407407407407407,
+      0.5098039215686274
+    ],
+    "f1_scores": [
+      0.5555555555555556,
+      0.6190476190476191
+    ],
+    "confusion_matrix": [
+      [
+        20,
+        7
+      ],
+      [
+        25,
+        26
+      ]
+    ]
+  },
+  "feature_importance": [
+    {
+      "rank": 1,
+      "feature": "medium_count",
+      "importance": 0.1320235729189531
+    },
+    {
+      "rank": 2,
+      "feature": "run_as_root",
+      "importance": 0.12923614094694183
+    },
+    {
+      "rank": 3,
+      "feature": "total_patterns",
+      "importance": 0.12867485627387584
+    },
+    {
+      "rank": 4,
+      "feature": "severity_score",
+      "importance": 0.09705800436901715
+    },
+    {
+      "rank": 5,
+      "feature": "untrusted_registries",
+      "importance": 0.09675842873219712
+    },
+    {
+      "rank": 6,
+      "feature": "high_count",
+      "importance": 0.08510903715365459
+    },
+    {
+      "rank": 7,
+      "feature": "privilege_escalation",
+      "importance": 0.08392406535205874
+    },
+    {
+      "rank": 8,
+      "feature": "missing_resource_limits",
+      "importance": 0.04330816091409192
+    },
+    {
+      "rank": 9,
+      "feature": "pattern_concentration",
+      "importance": 0.03950299584240273
+    },
+    {
+      "rank": 10,
+      "feature": "unique_pattern_types",
+      "importance": 0.036118810461919476
+    }
+  ]
+}
